@@ -25,7 +25,5 @@ def br_mutation(chromosome):
     :return: (bitarray) containing mutated chromosome
     """
     r = int((np.random.uniform())*len(chromosome))
-    print(r)
     chromosome[r] = not(chromosome[r])
-    print(chromosome)
     return chromosome
