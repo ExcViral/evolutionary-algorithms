@@ -64,7 +64,7 @@ def tournament_selection(population, cp, k):
     Selection pressure can be easily adjusted by changing the tournament size 'k'.
     Deterministic tournament selection selects the best individual in each tournament.
 
-    :param population: (list of bitarrays) containing chromosomes(bitarrays) represented by genes(bits)
+    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bits)
     :param cp: (float) crossover probability, typically should be between 0.8 and 1
     :param k: (int) number of members allowed to participate in each tournament that is held
     :return: (list) containing indices of selected chromosomes from the population
@@ -88,8 +88,8 @@ def tournament_selection(population, cp, k):
         # empty list to store fitnesses of tournament participator members
         fitnesses = []
         # calculate fitness of each tournament paticipator and append it to fitnesses list
-        for i in r:
-            fitnesses.append(fitness(numbered_population[i][0]))
+        for a in r:
+            fitnesses.append(fitness(numbered_population[a][0]))
         # Assume that index 0 is the fittest tournament participator, so set index = 0
         index = 0
         # Compare fitness of each tournament participator with fitness of participator on whom index is  currently
@@ -104,3 +104,31 @@ def tournament_selection(population, cp, k):
         del numbered_population[r[index]]
 
     return selected_indices
+
+
+def rank_selection(population, mode):
+    """
+    This function is an implementation of rank selection algorithm
+
+    Rank selection first ranks the population and then every chromosome receives fitness from this ranking. Here,
+    selection is based on this ranking rather than absolute differences in fitness.
+
+    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bits)
+    :param mode: (string) to set whether working on minimization(pass: "min") or maximization(pass: "max") problem
+    :return: (list of bitarray) containing original chromosomes, but ranked in order according to their fitness
+    """
+
+    # calculate fitness of all population members and store it in a new list fitnesses
+    fitnesses = [fitness(i) for i in population]
+
+    # now we have fitness of each population member, rank them according to their fitness, i.e. sort the population list
+    # according to the fitness values of population members, depending on whether it is minimization or maximization,
+    # sort ascending or descending.
+
+    # check whether to minimize or maximize
+    if mode == "max":
+        return [i for _, i in sorted(zip(fitnesses, population), reverse=True)]
+    elif mode == "min":
+        return [i for _, i in sorted(zip(fitnesses, population), reverse=False)]
+    else:
+        raise ValueError("Incorrect mode selected, please pass 'min' or 'max' as mode")
