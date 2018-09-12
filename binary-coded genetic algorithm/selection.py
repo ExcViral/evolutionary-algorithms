@@ -51,7 +51,7 @@ def round_up_to_even(f):
 # ======================================================================================================================
 
 
-def tournament_selection(population, cp, k):
+def tournament_selection(population, cp, k, mode):
     """
     This function is an implementation of tournament selection algorithm
 
@@ -67,8 +67,17 @@ def tournament_selection(population, cp, k):
     :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bits)
     :param cp: (float) crossover probability, typically should be between 0.8 and 1
     :param k: (int) number of members allowed to participate in each tournament that is held
+    :param mode: (string) to set whether working on minimization(pass: "min") or maximization(pass: "max") problem
     :return: (list) containing indices of selected chromosomes from the population
     """
+
+    # check whether to minimize or maximize
+    if mode == "min":
+        flag = False
+    elif mode == "max":
+        flag = True
+    else:
+        raise ValueError("Incorrect mode selected, please pass 'min' or 'max' as mode")
 
     # list that will keep track of selected indices, so that selection is done without replacement.
     selected_indices = []
@@ -94,9 +103,17 @@ def tournament_selection(population, cp, k):
         index = 0
         # Compare fitness of each tournament participator with fitness of participator on whom index is  currently
         # pointing, update index if fitness of non indexed participant is higher than indexed, else no change.
-        for j in range(len(r)):
-            if fitnesses[index] > fitnesses[j]:
-                index = j
+        # if problem is of maximization
+        if flag:
+            for j in range(len(r)):
+                if fitnesses[index] < fitnesses[j]:
+                    index = j
+        # if problem is of minimization
+        else:
+            for j in range(len(r)):
+                if fitnesses[index] > fitnesses[j]:
+                    index = j
+
         # Copy the original position of winner, and update it to selected_indices list
         winner = numbered_population[r[index]][1]
         selected_indices.append(winner)
