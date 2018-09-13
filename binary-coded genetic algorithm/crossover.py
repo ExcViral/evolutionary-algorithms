@@ -1,4 +1,4 @@
-# Crossover is a genetic operator that combines (mates) two individuals (parents) to produce two new individuals (Childs).
+# Crossover is a genetic operator that combines(mates) two individuals(parents) to produce two new individuals(Childs).
 
 # The idea behind crossover is that the new chromosome may be better than both of the parents if it takes the best
 # characteristics from each of the parents.
@@ -27,7 +27,7 @@ def unique_rn_generator(low, high, n):
     :return: (list) containing 'n' unique random numbers
     """
     r = np.random.randint(low, high, n)
-    while(len(r) != len(set(r))):
+    while len(r) != len(set(r)):
         r = np.random.randint(low, high, n)
     return r
 
@@ -65,13 +65,12 @@ def kp_crossover(parent1, parent2, k):
     switch = False
 
     for i in range(len(parent1)):
-        if (i in r):
-            switch = not(switch)
-
-        if (switch == False):
+        if i in r:
+            switch = not switch
+        if not switch:
             c1.append(parent1[i])
             c2.append(parent2[i])
-        elif (switch == True):
+        elif switch:
             c1.append(parent2[i])
             c2.append(parent1[i])
     return [c1, c2]
@@ -93,14 +92,14 @@ def uniform_crossover(parent1, parent2):
     :param parent2: (bitarray) containing genes of parent 2
     :return: (list of bitarrays) containing 2 children of parent 1 and parent 2
     """
-    mask = np.random.randint(0,2,len(parent1))
+    mask = np.random.randint(0, 2, len(parent1))
     c1 = bitarray()
     c2 = bitarray()
     for i in range(len(mask)):
-        if mask[i] == 1 :
+        if mask[i] == 1:
             c1.append(parent2[i])
             c2.append(parent1[i])
-        else :
+        else:
             c1.append(parent1[i])
             c2.append(parent2[i])
-    return [c1,c2]
+    return [c1, c2]
