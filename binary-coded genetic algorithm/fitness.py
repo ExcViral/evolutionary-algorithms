@@ -24,6 +24,14 @@
 # ===== Fitness evaluation function ====================================================================================
 # ======================================================================================================================
 
-def fitness(population):
+def fitness(chromosome):
+    """
+    This function will calculate fitness of the input chromosome
+
+    :param chromosome: input chromosome whose fitness is to be calculated
+    :return: fitness of the input chromosome
+    """
+
     # Implement the fitness evaluation function here
+
     return fitness
