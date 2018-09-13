@@ -30,7 +30,7 @@ def unique_rn_generator(low, high, n):
     :return: (list) containing 'n' unique random numbers
     """
     r = np.random.randint(low, high, n)
-    while(len(r) != len(set(r))):
+    while len(r) != len(set(r)):
         r = np.random.randint(low, high, n)
     return r
 
@@ -64,7 +64,7 @@ def tournament_selection(population, cp, k, mode):
     Selection pressure can be easily adjusted by changing the tournament size 'k'.
     Deterministic tournament selection selects the best individual in each tournament.
 
-    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bits)
+    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bit)
     :param cp: (float) crossover probability, typically should be between 0.8 and 1
     :param k: (int) number of members allowed to participate in each tournament that is held
     :param mode: (string) to set whether working on minimization(pass: "min") or maximization(pass: "max") problem
@@ -89,10 +89,10 @@ def tournament_selection(population, cp, k, mode):
     # start selecting parents for crossover
     for i in range(n):
         # Generate k unique random numbers
-        if (k < len(numbered_population)):
+        if k < len(numbered_population):
             r = unique_rn_generator(0, len(numbered_population), k)
         # However, if the list is exhausted, i.e there are less than k unique members left, repetition is allowed
-        elif (k >= len(numbered_population)):
+        elif k >= len(numbered_population):
             r = np.random.randint(0, len(numbered_population), k)
         # empty list to store fitnesses of tournament participator members
         fitnesses = []
@@ -130,7 +130,7 @@ def rank_selection(population, mode):
     Rank selection first ranks the population and then every chromosome receives fitness from this ranking. Here,
     selection is based on this ranking rather than absolute differences in fitness.
 
-    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bits)
+    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bit)
     :param mode: (string) to set whether working on minimization(pass: "min") or maximization(pass: "max") problem
     :return: (list of bitarray) containing original chromosomes, but ranked in order according to their fitness
     """
@@ -149,3 +149,52 @@ def rank_selection(population, mode):
         return [i for _, i in sorted(zip(fitnesses, population), reverse=False)]
     else:
         raise ValueError("Incorrect mode selected, please pass 'min' or 'max' as mode")
+
+
+def roulette_wheel_selection(population, cp):
+    """
+    This function is implementation of roulette wheel selection algorithm
+
+    Algorithm:
+    --[1] Calculate S = the sum of all finesses.
+    --[2] Generate a random number between 0 and S.
+    --[3] Starting from the top of the population, keep adding the finesses to the partial sum P, till P < S.
+    --[4] The individual for which P exceeds S is the chosen individual.
+
+    WARNING: This algorithm will fail where fitness can take a negative value, and maximum crossover probability should
+             be less than 0.95
+
+    :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bit)
+    :param cp: (float) crossover probability, typically should be between 0.8 and 1
+    :return:
+    """
+    # list that will keep track of selected indices, so that selection is done without replacement.
+    selected_indices = []
+    # number of parents to be selected
+    n = round_up_to_even(len(population) * cp)
+    # create a list of population fitness, alongwith original index of population member corresponding to that fitness
+    fitness_wIndices = [[fitness(l), m] for l, m in zip(population, range(len(population)))]
+    # initialize a variable for keeping track of sum of fitnesses
+    fitness_sum = 0
+    # start selecting parents for crossover
+    for i in range(n):
+        # calculate S = sum of all fitnesses
+        for j in fitness_wIndices:
+            fitness_sum = fitness_sum + j[0]
+        # generate a random number between 0 and S.
+        r = int(np.random.randint(0, fitness_sum, 1))
+        # Initializing variable for storing partial sums
+        partial_sum = 0
+        # starting from the top of the population, keep adding the finesses to the partial sum P, till P < S.
+        # The individual for which P exceeds S is the chosen individual.
+        for m in range(len(fitness_wIndices)):
+            partial_sum = partial_sum + fitness_wIndices[m][0]
+            if partial_sum > r:
+                # append index of the selected member to the list
+                selected_indices.append(fitness_wIndices[m][1])
+                # delete the selected element from the list, so that it does not get selected again
+                del fitness_wIndices[m]
+                break
+        fitness_sum = 0
+
+    return selected_indices
