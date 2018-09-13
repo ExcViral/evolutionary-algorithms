@@ -59,7 +59,6 @@ def kp_crossover(parent1, parent2, k):
     :return: (list of bitarrays) containing 2 children of parent 1 and parent 2
     """
     r = unique_rn_generator(1, len(parent1), k)
-    print(r)
     c1 = bitarray()
     c2 = bitarray()
     switch = False
