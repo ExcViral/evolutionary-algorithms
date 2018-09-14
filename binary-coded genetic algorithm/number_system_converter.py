@@ -9,11 +9,9 @@ import struct
 from bitarray import bitarray
 import numpy as np
 
-def bin_to_float(b):
-    """ Convert binary string to a float. """
-    b = b.to01()
-    bf = int_to_bytes(int(b, 2), 8)  # 8 bytes needed for IEEE 754 binary64.
-    return struct.unpack('>d', bf)[0]
+# ======================================================================================================================
+# ===== Helper functions ===============================================================================================
+# ======================================================================================================================
 
 
 def int_to_bytes(n, minlen=0):  # Helper function
@@ -31,10 +29,20 @@ def int_to_bytes(n, minlen=0):  # Helper function
         b.extend([0] * (minlen-len(b)))
     return bytearray(reversed(b))  # High bytes first.
 
+# ======================================================================================================================
+# ===== Main functions =================================================================================================
+# ======================================================================================================================
+
+
+def bin_to_float(b):
+    """ Convert bitarray (binary string) to a float. """
+    b = b.to01()
+    bf = int_to_bytes(int(b, 2), 8)  # 8 bytes needed for IEEE 754 binary64.
+    return struct.unpack('>d', bf)[0]
+
 
 def float_to_bin(value):  # For testing.
-    """ Convert float to 64-bit binary string. """
+    """ Convert float to 64-bit bitarray (binary string). """
     [d] = struct.unpack(">Q", struct.pack(">d", value))
     # return '{:064b}'.format(d)
     return bitarray('{:064b}'.format(d))
-
