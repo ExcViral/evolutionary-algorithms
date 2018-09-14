@@ -92,18 +92,23 @@ def uniform_crossover(parent1, parent2):
     --[2] Swap the gene values of parents for positions where there are 1's in mask, and do nothing where there are 0's
           in the mask.
 
-    :param parent1: (bitarray) containing genes of parent 1
-    :param parent2: (bitarray) containing genes of parent 2
-    :return: (list of bitarrays) containing 2 children of parent 1 and parent 2
+    :param parent1: (list of bitarray) containing genes of parent 1
+    :param parent2: (list of bitarray) containing genes of parent 2
+    :return: (list of list of bitarrays) containing 2 children of parent 1 and parent 2
     """
-    mask = np.random.randint(0, 2, len(parent1))
-    c1 = bitarray()
-    c2 = bitarray()
-    for i in range(len(mask)):
-        if mask[i] == 1:
-            c1.append(parent2[i])
-            c2.append(parent1[i])
-        else:
-            c1.append(parent1[i])
-            c2.append(parent2[i])
+    c1 = []
+    c2 = []
+    mask = np.random.randint(0, 2, len(parent1[0]))
+    for j in range(len(parent1)):
+        c1m = bitarray()
+        c2m = bitarray()
+        for i in range(len(mask)):
+            if mask[i] == 1:
+                c1m.append(parent2[j][i])
+                c2m.append(parent1[j][i])
+            else:
+                c1m.append(parent1[j][i])
+                c2m.append(parent2[j][i])
+        c1.append(c1m)
+        c2.append(c2m)
     return [c1, c2]
