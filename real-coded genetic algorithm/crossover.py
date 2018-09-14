@@ -15,9 +15,12 @@ def rv_crossover(parent1, parent2, mu):
     """
     This function is an implementation of real valued crossover operation
 
+    NOTE: If you have any bounds for chromosome, check if the newly generated children satisfy the requirements, if
+          not, discard the children, and introduce a new random chromosome satisfying the bounds.
+
     :param parent1: (list of float) carrying chromosomes of parent1
     :param parent2: (list of float) carrying chromosomes of parent2
-    :param mu: (int) crossover operator, should be between 10 and 20
+    :param mu: (int) crossover operator, should be between 10 and 20, take 20
     :return: (list of list) containing children produced as a result of crossover
     """
 
@@ -38,6 +41,9 @@ def rv_crossover(parent1, parent2, mu):
         # compute childrens' chromosome value
         c1m = (1 / 2) * ((1 + b) * parent1[i] + (1 - b) * parent2[i])
         c2m = (1 / 2) * ((1 - b) * parent1[i] + (1 + b) * parent2[i])
+
+        # NOTE: If you need to check for bounds, do it here
+
         # append chromosome to the lists
         c1.append(c1m)
         c2.append(c2m)
