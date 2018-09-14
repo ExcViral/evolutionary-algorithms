@@ -24,7 +24,8 @@ def br_mutation(chromosome):
     :param chromosome: (list of bitarray) of bits containing some number of genes, representing a chromosome
     :return: (bitarray) containing mutated chromosome
     """
+    r = np.random.randint(0,len(chromosome[0]),40)
     for i in chromosome:
-        r = int((np.random.uniform())*len(i))
-        i[r] = not(i[r])
+        for k in r:
+            i[k] = not(i[k])
     return chromosome
