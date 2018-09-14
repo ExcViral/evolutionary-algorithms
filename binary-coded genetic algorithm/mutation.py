@@ -21,9 +21,10 @@ def br_mutation(chromosome):
           part of it.
     --[3] Select 'rth' gene from chromosome, and flip/invert its value
 
-    :param chromosome: (bitarray) of bits containing some number of genes, representing a chromosome
+    :param chromosome: (list of bitarray) of bits containing some number of genes, representing a chromosome
     :return: (bitarray) containing mutated chromosome
     """
-    r = int((np.random.uniform())*len(chromosome))
-    chromosome[r] = not(chromosome[r])
+    for i in chromosome:
+        r = int((np.random.uniform())*len(i))
+        i[r] = not(i[r])
     return chromosome
