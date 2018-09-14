@@ -53,25 +53,30 @@ def kp_crossover(parent1, parent2, k):
                 performing two single-point crossovers with different crossover points.
           This strategy can be generalized to k-point crossover for any positive integer k, picking k crossover points.
 
-    :param parent1: (bitarray) containing genes of parent 1
-    :param parent2: (bitarray) containing genes of parent 2
+    :param parent1: (list of bitarray) containing chromosomes of parent 1
+    :param parent2: (list of bitarray) containing chromosomes of parent 2
     :param k: (int) number of points for crossover
-    :return: (list of bitarrays) containing 2 children of parent 1 and parent 2
+    :return: (list of list of bitarray) containing 2 children of parent 1 and parent 2
     """
-    r = unique_rn_generator(1, len(parent1), k)
-    c1 = bitarray()
-    c2 = bitarray()
-    switch = False
 
-    for i in range(len(parent1)):
-        if i in r:
-            switch = not switch
-        if not switch:
-            c1.append(parent1[i])
-            c2.append(parent2[i])
-        elif switch:
-            c1.append(parent2[i])
-            c2.append(parent1[i])
+    c1 = []
+    c2 = []
+    for j in range(len(parent1)):
+        r = unique_rn_generator(1, len(parent1[j]), k)
+        switch = False
+        c1m = bitarray()
+        c2m = bitarray()
+        for i in range(len(parent1[j])):
+            if i in r:
+                switch = not switch
+            if not switch:
+                c1m.append(parent1[j][i])
+                c2m.append(parent2[j][i])
+            elif switch:
+                c1m.append(parent2[j][i])
+                c2m.append(parent1[j][i])
+        c1.append(c1m)
+        c2.append(c2m)
     return [c1, c2]
 
 
