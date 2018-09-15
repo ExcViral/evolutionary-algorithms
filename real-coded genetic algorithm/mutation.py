@@ -12,9 +12,9 @@ def rv_mutate(chromosome, eta):
     NOTE: If you have any bounds for chromosome, check if the newly generated children satisfy the requirements, if
           not, discard the children, and introduce a new random chromosome satisfying the bounds.
 
-    :param chromosome: (list of float) containing
+    :param chromosome: (list of float) containing input chromosome to be mutated
     :param eta: (int) mutation operator, typically between 15 to 20, take 15
-    :return: ()
+    :return: (list of float) containing mutated chromosome
     """
     # calculate p
     p = 1 / (eta + 1)

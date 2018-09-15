@@ -166,7 +166,7 @@ def roulette_wheel_selection(population, cp):
 
     :param population: (list of bitarray) containing chromosomes(bitarray) represented by genes(bit)
     :param cp: (float) crossover probability, typically should be between 0.8 and 1
-    :return:
+    :return: (list) containing indices of selected chromosomes from the population
     """
     # list that will keep track of selected indices, so that selection is done without replacement.
     selected_indices = []
