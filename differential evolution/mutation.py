@@ -207,3 +207,36 @@ def mutate_vectors_type3(population, F, mode):
         mutated_vectors.append(V_i)
 
     return mutated_vectors
+
+
+def mutate_vectors_type4(population, F):
+    """
+    This function will implement the type 4 mutation vector (refer the comments above)
+
+    Method and formulation:
+        for each vector in target vector T, We have to select five unique and random vectors from the population in the
+        target vector space. Then compute the mutated vector for T using the formula:
+        V_(i,G) = X_(r1,G) + F*(X_(r2,G) - X_(r3,G) + X_(r4,G) - X_(r5,G))
+
+    :param population: (list) of population containing (list) of candidate solution vectors
+    :param F: (float) Scaling factor, a real and constant factor between [0, 2] which controls the amplification of the
+              differential variation
+    :return: (list) of mutated population containing (list) of mutated solution vectors
+    """
+    mutated_vectors = []
+    for i in range(len(population)):
+        # Select 5 unique random vectors from population, different from current vector
+        r = unique_rn_generator(0, len(population), 5, i)
+        X_r1 = population[r[0]]
+        X_r2 = population[r[1]]
+        X_r3 = population[r[2]]
+        X_r4 = population[r[3]]
+        X_r5 = population[r[4]]
+        V_i = add_lists(X_r1, add_lists(scalar_mul_list(F, sub_lists(X_r2, X_r3)),\
+                                                 scalar_mul_list(F, sub_lists(X_r4, X_r5))))
+        print(V_i)
+        # NOTE: If you need to check if V_i satisfies the domain upper and lowerbounds, do it here.
+
+        mutated_vectors.append(V_i)
+
+    return mutated_vectors
