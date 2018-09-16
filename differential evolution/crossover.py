@@ -19,7 +19,7 @@
 
 # import necessary libraries
 import numpy as np
-
+import copy
 
 # import necessary modules
 
@@ -47,19 +47,18 @@ def binomial_crossover(target_vec, mutant_vec, CR):
     :return: (list of list) containing all trial vectors
     """
 
-    tv = target_vec
-    mv = mutant_vec
+    tv = [a[:] for a in target_vec]
+    mv = [a[:] for a in mutant_vec]
 
     trial_vec = []
 
     for i in range(len(tv)):
-        # randomly choose from the mutant so that the trial vector will not replicate the target vector.
+        # randomly choose one paramenter from the mutant so that the trial vector will not replicate the target vector.
         trial_vec_i = []
         r = np.random.randint(0, len(tv[i]))
-        print(r, len(tv), len(tv[i]))
         trial_vec_i.append(mv[i].pop(r))
         del tv[i][r]
-        # now select other trial vectors
+        # now select other parameters for trial vector
         for j in range(len(tv[i])):
             r = np.random.uniform(0, 1)
             if r <= CR:
@@ -68,4 +67,46 @@ def binomial_crossover(target_vec, mutant_vec, CR):
                 trial_vec_i.append(tv[i][j])
         trial_vec.append(trial_vec_i)
 
+    return trial_vec
+
+
+def exponential_crossover(target_vec, mutant_vec, CR):
+    """
+    This function is the implementation of exponential crossover algorithm of Differential Evolution
+
+    DE’s exponential crossover works by choosing one parameter randomly and copying from the mutant to the corresponding
+    trial vector so that the trial vector will be different from the vector with which it will be compared. The source
+    of subsequent trial parameters is determined by comparing CR to a uniformly distributed random number R that is
+    generated anew for each parameter. As long as R ≤ CR , parameters continue to be taken from the mutant vector, but
+    the first time that R > Cr , the current and all remaining parameters are taken from the target vector.
+
+    :param target_vec: (list of list) containing all target vectors
+    :param mutant_vec: (list of list) containing all mutant vectors
+    :param CR: (float) Crossover rate, should be between (0, 1)
+    :return: (list of list) containing all trial vectors
+    """
+    tv = [a[:] for a in target_vec]
+    mv = [a[:] for a in mutant_vec]
+
+    trial_vec = []
+
+    for i in range(len(tv)):
+        # randomly choose one paramenter from the mutant so that the trial vector will not replicate the target vector.
+        trial_vec_i = []
+        print(len(tv[i]))
+        r = np.random.randint(0, len(tv[i]))
+        # print(r, len(tv), len(tv[i]), mv[i][r])
+        trial_vec_i.append(mv[i].pop(r))
+        del tv[i][r]
+        # now select other parameters for trial vector
+        j = 0
+        # As long as R ≤ CR, parameters continue to be taken from the mutant vector, but the first time that R > Cr ,
+        # the current and all remaining parameters are taken from the target vector.
+        while (np.random.uniform(0, 1) <= CR) and (j < len(mv[i])):
+            trial_vec_i.append(mv[i][j])
+            j = j+1
+        while j < len(tv[i]):
+            trial_vec_i.append(tv[i][j])
+            j = j+1
+        trial_vec.append(trial_vec_i)
     return trial_vec
