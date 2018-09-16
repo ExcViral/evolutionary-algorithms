@@ -86,7 +86,7 @@ def mutate_vectors_type1(population, F):
     """
     This function will implement the type 1 mutation vector (refer the comments above)
 
-    Method:
+    Method and formulation:
         for each vector in target vector T, We have to select three unique and random vectors from the population in the
         target vector space. Then compute the mutated vector for T using the formula:
         V_(i,G) = X_(r1,G) + F*(X_(r2,G) - X_(r3,G))
@@ -104,6 +104,54 @@ def mutate_vectors_type1(population, F):
         X_r2 = population[r[1]]
         X_r3 = population[r[2]]
         V_i = add_lists(X_r1, scalar_mul_list(F, sub_lists(X_r2, X_r3)))
+
+        # NOTE: If you need to check if V_i satisfies the domain upper and lowerbounds, do it here.
+
+        mutated_vectors.append(V_i)
+
+    return mutated_vectors
+
+
+def mutate_vectors_type2(population, F, mode):
+    """
+    This function will implement the type 2 mutation vector (refer the comments above)
+
+    Method and formulation:
+        first find the best vector from the population (choose according to best fitness value), then
+        for each vector in target vector T, We have to select two unique and random vectors from the population in the
+        target vector space. Then compute the mutated vector for T using the formula:
+        V_(i,G) = X_(best,G) + F*(X_(r1,G) - X_(r2,G))
+
+    :param population: (list) of population containing (list) of candidate solution vectors
+    :param F: (float) Scaling factor, a real and constant factor between [0, 2] which controls the amplification of the
+              differential variation
+    :param mode: (string) to set whether working on minimization(pass: "min") or maximization(pass: "max") problem
+    :return: (list) of mutated population containing (list) of mutated solution vectors
+    """
+    mutated_vectors = []
+
+    # find the best(fittest) vector
+    X_best = population[0]
+    X_best_fitness = fitness(X_best)
+    if mode == "max":
+        for i in population:
+            current_fitness = fitness(i)
+            if current_fitness > X_best_fitness:
+                X_best = i
+                X_best_fitness = current_fitness
+    elif mode == "min":
+        for i in population:
+            current_fitness = fitness(i)
+            if current_fitness < X_best_fitness:
+                X_best = i
+                X_best_fitness = current_fitness
+
+    for i in range(len(population)):
+        # Select 3 unique random vectors from population, different from current vector
+        r = unique_rn_generator(0, len(population), 2, i)
+        X_r1 = population[r[0]]
+        X_r2 = population[r[1]]
+        V_i = add_lists(X_best, scalar_mul_list(F, sub_lists(X_r1, X_r2)))
 
         # NOTE: If you need to check if V_i satisfies the domain upper and lowerbounds, do it here.
 
